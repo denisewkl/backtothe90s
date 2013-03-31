@@ -1,8 +1,9 @@
-<!doctype html>
-<html ng-app="app">
-  <header>
-  
-  <style type='text/css'>
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+<title>ACE in Action</title>
+ 
+<style type='text/css'>
   /* MUST HAVE WIDTH/HEIGHT */
   .ace-editor {
     width:100%;
@@ -22,6 +23,7 @@
 <script src="angular-ace.js"></script>
 <script src="ace.js" type="text/javascript" charset="utf-8"></script>
 
+
 <script language="javascript" type="text/javascript">
     angular.module('myApp', ['ngResource','ace']);
 
@@ -31,14 +33,33 @@
           {language : 'js', urlName : 'js' },
         ];
 
-        $scope.language = 'python';
+        $scope.language = 'js';
 
                 //Some example code for each language.
-        $scope.d = {"java":{"solution":"int a = 2;\nint b = 5;\nint c=a+1;\na=8+b-c;",
-                          "tests":"assertEquals(10,a);\nassertEquals(3,c)"},
+        $scope.d = {"scipy":{"solution":"import scipy.interpolate\nx = numpy.arange(10,dtype='float32') * 0.3\ny = numpy.cos(x)\nrep = scipy.interpolate.splrep(x,y)\nsol =  scipy.interpolate.splev(0.5,rep)",
+                             "tests":">>> assert_almost_equal(sol, 0.87752449938946964)\nTrue"},
+                    "oc":{"solution":"int b=2;\nfloat f = 123.45;\ndouble inches = 3*2;\nNSString *string1 = @\"This string is immutable\";",
+                          "tests":"AssertEquals(2, b);\nint expected_b = 2;\nAssertEquals(expected_b, b);\nAssertEquals((float)123.45, f);\nAssertEquals([NSString stringWithString:@\"This string is immutable\"], string1);"},
+                    "c":{ "solution":"int sum(int a, int b){return a+b;}\nchar *message = \"Hello world!!!\";\nconst char *testStrings[] = { \"foo\", \"boo\", \"woo\", \"zoo\" };",
+                          "tests" :  "void test_sum(void){TEST_ASSERT(5==sum(2,3));}\nvoid test_hello_world(void){TEST_ASSERT_EQUAL_STRING(message, \"Hello world!!!\");}\nvoid testNotEqualStringArray1(void){ const char *expStrings[] = { \"foo\", \"boo\", \"woo\", \"zoo\" };\nTEST_ASSERT_EQUAL_STRING_ARRAY(expStrings, testStrings, 4);}" },      
+                     "r":{"solution":"factorial <- function(n){\n if (n == 0) {return(1)}\n else {  return(n * factorial(n - 1)) }\n}",
+                          "tests":">>> checkEquals(6, factorial(3))\nTrue"},
+                     "python":{"solution":"number = 2\nwizard = 'Oz'\n\ndef mapper(shard):\n  return {'hi': [1,1,1,1]}\n\ndef reducer(map):\n  return {'hi':4}\n\ndef play_game(x):\n  return 'X--O----'",
+                          "tests":">>> number\n 2\n>>> wizard\n 'Oz'\n>>> play_game('X---O----')\n  'XX--O----'\n>>> mapper('hi hi hi hi')\n  {'hi': [1, 1, 1, 1]}\n>>> reducer({'hi': [1,1,1,1]})\n {'hi':4}"},
+                     
+                     "oldjsp":{"solution":"<%@ page import=\"java.util.*, java.text.*\" %><HTML><HEAD><TITLE>Hello Pineapples</TITLE></HEAD>\n<BODY><H1>Hello World</H1>\n<TABLE><TR><TD><P>This is an <B>embedded</B> table</P></TD></TR>\n<TR><TD>    The request parameter 'fruit' has a value of <%= request.getParameter(\"fruit\") %>\n</TD></TR></TABLE>\nToday is: <%= new SimpleDateFormat(\"dd/MM/yyyy\").format(new Date()) %>\n </BODY></HTML>",
+                          "tests":"String expectedDate = new SimpleDateFormat(\"dd/MM/yyyy\").format(new Date());\npage().shouldHaveTitle(\"Hello Pineapples\");\npage().shouldContain(\"Today is: \"+expectedDate);\nonRequest(\"fruit\", \"guava\").page().shouldContain(\"The request parameter 'fruit' has a value of guava\");\npage().shouldContainElement(\"//TABLE/TR/TD/P/B\");\nelement(\"//TABLE/TR/TD/P/B\").shouldContain(\"embedded\");"},
+                     "ruby":{"solution":"a = 1\nb = 2",
+                          "tests":"assert_equal(1,a)\nassert_equal(2,b)",
+                          "hosts":["parserplayground-staging.appspot.com/ruby?id=1","parserplayground-staging.appspot.com/ruby?id=2"]
+                          },
                      "js":{"solution":"a=1;\nb=7;",
                           "tests":"assert_equal(1,a);\nassert_equal(2,b);"},
+                    
+                    "java":{"solution":"String userChoice = \"rock\";",
+                            "tests":"String computerChoice = \"\"; int computer = Math.random(); if (computer < 0.34) {computerChoice = \"rock\";} else if (computer < 0.67){computerChoice = \"paper\";} else {computerChoice = \"scissors\";} if (computerChoice == userChoice){assertNotSame(\"its a tie!\", computerChoice, userChoice);} else if (userChoice != \"rock\" && userChoice != \"paper\" && userChoice != \"scissors\"){fail(\"invalid move!\");} else if (computerChoice == \"rock\"){if (userChoice == \"rock\"){assertEquals (\"paper wins\", computerChoice, userChoice);}else {assertEquals (\"rock wins\", computerChoice, userChoice);}}else if (computerChoice == \"paper\"){if (userChoice == \"rock\"){assertEquals( \"paper wins\", computerChoice, userChoice);}else {assertEquals( \"scissors wins\", computerChoice, userChoice);}}else if (computerChoice == \"scissors\"){if (userChoice == \"paper\"){assertEquals( \"scissors wins\", computerChoice, userChoice);}else {assertEquals( \"rock wins\", computerChoice, userChoice);}}",
                     }
+            },
 
 
         $scope.status = "Ready"
@@ -71,104 +92,51 @@
                                     'jsonrequest':jsonrequest},
                 function(response) { 
                   $scope.result = response;
-                   $scope.status = "Ready"
+                  $scope.status = "Ready"
                 });  
         };
 
       }
 </script>
-  
-  
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.js"></script>
-    <script language="javascript" type="text/javascript">
-      angular.module('app', []);
-      
-      //Whatever you put on the controller scope,
-      //will be availalble in the HTML element bound to the controller.
-      function MyController($scope){
-        $scope.newMessage = "rock";
-        $scope.messages = ["Rock wins", "Paper wins"]; 
-        
-        $scope.rps = function(){
-          var userChoice = $scope.newMessage;
-          //prompt("Do you choose rock, paper or scissors?");
 
-          var computerChoice = Math.random();
-          
-          if (computerChoice < 0.34)
-          computerChoice = "rock";
-          else if (computerChoice < 0.67)
-          computerChoice = "paper";
-          else
-          computerChoice = "scissors";
-          
-          console.log(computerChoice);
-          
-          var msg = "";
-          
-          if (computerChoice === userChoice){
-            msg = "its a tie!";
-          } else if (userChoice != "rock" && userChoice != "paper" && 
-            userChoice != "scissors"){
-              msg = "invalid move!";
-          }
-          
-          else if (computerChoice === "rock"){
-            if (userChoice === "paper"){
-              msg = "paper wins";
-          	}else {
-          		msg = "rock wins";
-          	}
-          }
-          
-          else if (computerChoice === "paper"){
-          	if (userChoice === "rock"){
-          		msg = "paper wins";
-          	}else {
-          		msg = "scissors wins";
-          	}
-          }
-          
-          else if (computerChoice === "scissors"){
-          	if (userChoice === "paper"){
-          		msg = "scissors wins";
-          	}else {
-          		msg = "rock wins";
-          	}
-          } 
-          
-          $scope.newMessage = msg;
-          
-          //$scope.add = function(){
-            $scope.messages.push($scope.newMessage);
-          //};
-        };
-        
+</head>
 
-      }
-    </script>
-  </header>
-  
-  <body ng-controller="MyController">
-    <font size='20px'>Do something!</font><br>
-    Choose Rock, Paper or Scissors:<br>     
-    <input type="text" ng-model="newMessage">
-    <input type="submit" ng-click="rps()" value="new move">
-    <br>
-    Wins: <br>
-    <ul>
-      <li ng-repeat="message in messages">
-        {{message}}
-      </li>
-    </ul>
-    <form action = "./thankyou_play.html">
-    <input type="submit" value="End Game">
-    </form>
-    
-    <a href="./index.html">Home</a><br>
-    <a href="./signup.html">Sign Up</a><br>
-    <a href="./share.html">Share</a> this page<br>
-    
-  </body>
-  
+<body ng-controller="FirstController">
+<select ng-model="language" ng:change="load_example_code()" ng-options="item.language as item.urlName for item in supported_langugages"></select>
+<br>
+<input type="submit" value="verify {{language}} code" ng-click="verify()">
+<br>
+
+
+Status: {{status}}
+Result: <pre>{{result}}</pre><br>
+Is Solved: <b>{{result.solved}}</b><br>
+<table border=1 bgcolor=#FFFFFF>
+    <tr>   
+        <th>Called</th>
+        <th>Expected</th>
+        <th>Recieved</th>
+        <th>Correct</th>    
+    </tr>
+    <tr ng-repeat="line in result.results">
+        <td>{{line.call}}</td>
+        <td>{{line.expected}}</td>
+        <td>{{line.received}}</td>
+        <td ng-show="line.correct" bgcolor=#00FF00>{{line.correct}}</td>
+        <td ng-show="!line.correct" bgcolor=#FF0000>{{line.correct}}</td>      
+    </tr>
+</table>
+
+
+Player Solution:
+<div>
+    <textarea ng-model="solution" name="solution" rows="8" cols="50"></textarea>
+</div>
+Tests:
+<div >
+    <textarea ng-model="tests" name="tests" rows="8" cols="50"></textarea>
+</div>
+
+<span ng-init="load_example_code()"></span>
+</body>
 </html>
